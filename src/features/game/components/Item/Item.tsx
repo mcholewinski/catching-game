@@ -64,7 +64,6 @@ function Item({
     return (
         <pixiGraphics
             draw={g => {
-                g.clear()
                 g.fill(0xFFD700)
                 g.circle(ITEM_SIZE / 2, ITEM_SIZE / 2, ITEM_SIZE / 2)
             }}

@@ -9,7 +9,14 @@ import { calculateGameSize } from "./utils";
 
 extend({ Container, Graphics, Sprite })
 
-function Game() {
+interface GameProps {
+    isPlaying: boolean;
+    onGameStart: () => void;
+    onScoreChange: (score: number | ((prev: number) => number)) => void
+    onLivesChange: (lives: number | ((prev: number) => number)) => void
+}
+
+function Game({ isPlaying, onGameStart, onScoreChange, onLivesChange }: GameProps) {
     const wrapperRef = useRef<HTMLDivElement | null>(null);
 
     const [canvasSize, setCanvasSize] = useState<{ width: number, height: number }>(calculateGameSize)
@@ -27,12 +34,13 @@ function Game() {
         <div className="w-screen max-w-[1600px] mx-auto h-screen" ref={wrapperRef}>
             <Application
                 background='#5CB6FF'
+                autoStart={false}
                 width={canvasSize.width}
                 height={canvasSize.height}
                 antialias
                 resizeTo={wrapperRef}
             >
-                <MainContainer canvasSize={canvasSize}/>
+                <MainContainer canvasSize={canvasSize} isPlaying={isPlaying} onScoreChange={onScoreChange} onLivesChange={onLivesChange} />
             </Application>
         </div>
     )

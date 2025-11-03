@@ -1,28 +1,29 @@
 interface GameUIProps {
   score: number
+  lives: number
   isPlaying: boolean
   onStart: () => void
 }
 
-function GameUI ({ score, isPlaying, onStart }: GameUIProps) {
+function GameUI({ score, lives, isPlaying, onStart }: GameUIProps) {
   return (
-    <div className="absolute">
-      <div className="text-3xl font-bold mb-3 text-game-primary drop-shadow-lg">
+    <div className="h-20 w-full absolute bottom-0 flex justify-around items-center bg-black">
+      <div className="text-xl font-bold text-yellow-300">
         Score: {score}
       </div>
-      {!isPlaying && (
+      {!isPlaying ? (
         <button
           onClick={onStart}
-          className="px-6 py-3 text-lg font-semibold bg-game-primary hover:bg-opacity-90 transition-all duration-200 border-none rounded-lg text-white cursor-pointer shadow-lg hover:shadow-xl transform hover:scale-105"
+          className="text-sm px-4 py-2 rounded-xl text-black font-semibold bg-white hover:bg-opacity-90"
         >
-          Start Game
+          START GAME
         </button>
-      )}
-      {isPlaying && (
-        <div className="text-sm text-gray-400 mt-2">
-          Use Arrow Keys or WASD to move
-        </div>
-      )}
+      ) : <div className="text-sm text-black-600">
+        Use Left/Right Arrow Keys or "A" and "D" to move
+      </div>}
+      <div className="text-xl font-bold text-red-700">
+        Lives: {lives}
+      </div>
     </div>
   )
 }

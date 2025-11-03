@@ -37,7 +37,6 @@ function usePlayerControls() {
         if (heldKeys.has('LEFT') && heldKeys.has('RIGHT')) {
             return null
         }
-        // Return the first pressed key, or null if none
         return heldKeys.has('LEFT') ? 'LEFT' : heldKeys.has('RIGHT') ? 'RIGHT' : null
     }, [heldKeys])
 

@@ -1,6 +1,6 @@
 import { useState } from 'react';
 
-import Game from './features/game/Game';
+import GameController from './features/game/GameController';
 import GameUI from './features/ui/GameUI';
 
 function App() {
@@ -12,10 +12,6 @@ function App() {
     setScore(0)
   }
 
-  const handleGameOver = () => {
-    setIsPlaying(false)
-  }
-
   return (
     <div className="w-screen h-screen flex flex-col items-center justify-center bg-game-bg text-white font-sans">
       <GameUI
@@ -23,7 +19,7 @@ function App() {
         isPlaying={isPlaying}
         onStart={handleStart}
       />
-      <Game />
+      <GameController />
     </div>
   )
 }

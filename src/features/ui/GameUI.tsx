@@ -6,7 +6,7 @@ interface GameUIProps {
 
 function GameUI ({ score, isPlaying, onStart }: GameUIProps) {
   return (
-    <div>
+    <div className="absolute">
       <div className="text-3xl font-bold mb-3 text-game-primary drop-shadow-lg">
         Score: {score}
       </div>

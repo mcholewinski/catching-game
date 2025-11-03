@@ -49,7 +49,7 @@ function MainContainer({ canvasSize, isPlaying, onGameStart, onLivesChange, onSc
         const interval = setInterval(() => {
             const newItem: ItemData = {
                 id: `item-${Date.now()}-${Math.random()}`,
-                x: Math.random() * (canvasSize.width - 100),
+                x: Math.floor(Math.random() * ((canvasSize.width - 50) - 50 + 1) + 50),
                 y: Math.floor(Math.random() * (-30 - -100 + 1)) + -100,
                 speed: ITEM_FALL_SPEED
             }

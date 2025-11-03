@@ -34,6 +34,7 @@ function Game({ isPlaying, onGameStart, onScoreChange, onLivesChange }: GameProp
         <div className="w-screen max-w-[1600px] mx-auto h-screen" ref={wrapperRef}>
             <Application
                 background='#5CB6FF'
+                backgroundAlpha={0.9}
                 autoStart={false}
                 width={canvasSize.width}
                 height={canvasSize.height}

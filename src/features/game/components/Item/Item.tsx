@@ -1,6 +1,6 @@
 import { Graphics } from 'pixi.js'
 import { extend, useTick } from '@pixi/react'
-import { useState } from 'react'
+import { useState, useRef } from 'react'
 
 import { ITEM_SIZE } from './constants'
 import { PLAYER_SIZE } from '../Player/constants'
@@ -32,13 +32,15 @@ function Item({
     canvasHeight
 }: ItemProps) {
     const [y, setY] = useState<number>(initialY)
+    const shouldCallFallOff = useRef(false)
+    const shouldCallCollect = useRef(false)
 
     useTick(() => {
         setY(prev => {
             const newY = prev + speed
 
             if (newY > canvasHeight) {
-                onFallOff(id)
+                shouldCallFallOff.current = true
                 return prev
             }
 
@@ -53,12 +55,22 @@ function Item({
             )
 
             if (distance < (ITEM_SIZE + PLAYER_SIZE) / 2) {
-                onCollect(id)
+                shouldCallCollect.current = true
                 return prev
             }
 
             return newY
         })
+
+        if (shouldCallFallOff.current) {
+            shouldCallFallOff.current = false
+            onFallOff(id)
+        }
+
+        if (shouldCallCollect.current) {
+            shouldCallCollect.current = false
+            onCollect(id)
+        }
     })
 
     return (

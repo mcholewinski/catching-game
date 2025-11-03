@@ -1,6 +1,6 @@
 import { AnimatedSprite, Assets, Container, Sprite, Texture } from "pixi.js";
 import { extend, useTick } from "@pixi/react";
-import { useEffect, useState, useRef } from "react";
+import { useCallback, useEffect, useState, useRef } from "react";
 
 import {
   PLAYER_DEFAULT_POS_X,
@@ -32,6 +32,19 @@ function Player({ canvasSize, onMove }: PlayerProps) {
   const prevCanvasSize = useRef(canvasSize);
 
   const { getDirection } = usePlayerControls();
+
+  // Callback refs that call play() when sprite mounts
+  const runLeftRef = useCallback((sprite: AnimatedSprite | null) => {
+    if (sprite) {
+      sprite.play();
+    }
+  }, []);
+
+  const runRightRef = useCallback((sprite: AnimatedSprite | null) => {
+    if (sprite) {
+      sprite.play();
+    }
+  }, []);
 
   useEffect(() => {
     const widthChanged = prevCanvasSize.current.width !== canvasSize.width;
@@ -118,25 +131,25 @@ function Player({ canvasSize, onMove }: PlayerProps) {
           x={position.x}
           y={position.y}
         />}
-      {animation === 'runLeft' &&
+      {animation === 'runLeft' && walkLeftFrames.length > 0 &&
         <pixiAnimatedSprite
+          ref={runLeftRef}
           textures={walkLeftFrames}
-          isPlaying={true}
           width={PLAYER_SIZE}
           height={PLAYER_SIZE}
           interactive
-          loop
+          loop={true}
           animationSpeed={0.1}
           x={position.x}
           y={position.y}
         />}
-      {animation === 'runRight' &&
+      {animation === 'runRight' && walkRightFrames.length > 0 &&
         <pixiAnimatedSprite
+          ref={runRightRef}
           textures={walkRightFrames}
-          isPlaying={true}
           width={PLAYER_SIZE}
           height={PLAYER_SIZE}
-          loop
+          loop={true}
           animationSpeed={0.1}
           x={position.x}
           y={position.y}

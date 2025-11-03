@@ -56,12 +56,14 @@ function Player({ canvasSize, onMove }: PlayerProps) {
             setPosition(prev => {
                 const movement = direction === 'LEFT' ? -PLAYER_SPEED : PLAYER_SPEED
                 const newX = Math.max(0, Math.min(canvasSize.width - PLAYER_SIZE, prev.x + movement))
-                const newPos = { ...prev, x: newX }
-                onMove(newPos)
-                return newPos
+                return { ...prev, x: newX }
             })
         }
     })
+
+    useEffect(() => {
+        onMove(position)
+    }, [position, onMove])
 
     return (
         <pixiContainer>

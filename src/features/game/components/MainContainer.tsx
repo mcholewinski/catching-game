@@ -37,13 +37,13 @@ function MainContainer({ children, canvasSize }: MainContainerProps) {
         return () => clearInterval(interval)
     }, [canvasSize.width])
 
-    const handleCollect = (id: string) => {
+    const removeItem = (id: string) => {
         setItems(prev => prev.filter(item => item.id !== id))
-        console.log('addScore')
     }
 
-    const handleFallOff = (id: string) => {
-        setItems(prev => prev.filter(item => item.id !== id))
+    const handleCollect = (id: string) => {
+        removeItem(id)
+        console.log('addScore')
     }
 
     if (import.meta.env.MODE === 'development') {
@@ -63,7 +63,7 @@ function MainContainer({ children, canvasSize }: MainContainerProps) {
                     initialY={-30}
                     speed={item.speed}
                     onCollect={handleCollect}
-                    onFallOff={handleFallOff}
+                    onFallOff={removeItem}
                     playerX={playerPosition.x}
                     playerY={playerPosition.y}
                     canvasHeight={canvasSize.height}

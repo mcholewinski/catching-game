@@ -1,6 +1,6 @@
 import { useEffect, useState } from "react";
 
-import GameController from "./features/game/GameController";
+import Game from "./features/game/Game";
 import GameUI from "./features/ui/GameUI";
 
 function App() {
@@ -58,7 +58,7 @@ function App() {
         </div>
       ) : (
         <>
-          <GameController
+          <Game
             isPlaying={isPlaying}
             onGameStart={handleStart}
             onScoreChange={setScore}

@@ -34,6 +34,10 @@ function usePlayerControls() {
   }, [handleInput]);
 
   const getDirection = useCallback(() => {
+    if (heldKeys.size === 0) {
+      return null;
+    }
+
     if (heldKeys.has("LEFT") && heldKeys.has("RIGHT")) {
       return null;
     }

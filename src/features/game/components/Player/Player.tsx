@@ -3,26 +3,26 @@ import { extend, useTick } from "@pixi/react";
 import { useEffect, useState, useRef } from "react";
 
 import {
-  PLAYER_DEFAULT_POS_X,
-  PLAYER_DEFAULT_POS_Y,
   PLAYER_SIZE,
   PLAYER_SPEED,
-} from "./constants";
-import usePlayerControls from "./usePlayerControls";
-import type { Position } from "../../types/common";
+  PLAYER_Y_OFFSET,
+} from "../../config/constants";
+import usePlayerControls from "../../hooks/usePlayerControls";
+import { clampX } from "../../utils/boundaries";
+import type { Position, CanvasSize } from "../../types";
 
 extend({ Container, Sprite });
 
 interface PlayerProps {
-  canvasSize: { width: number; height: number };
+  canvasSize: CanvasSize;
   onMove: ({ x, y }: Position) => void;
 }
 
 function Player({ canvasSize, onMove }: PlayerProps) {
   const [texture, setTexture] = useState<Texture>(Texture.EMPTY);
   const [position, setPosition] = useState({
-    x: PLAYER_DEFAULT_POS_X,
-    y: PLAYER_DEFAULT_POS_Y,
+    x: canvasSize.width / 2 - PLAYER_SIZE / 2,
+    y: canvasSize.height - PLAYER_Y_OFFSET,
   });
   const prevCanvasSize = useRef(canvasSize);
 
@@ -41,9 +41,9 @@ function Player({ canvasSize, onMove }: PlayerProps) {
           newX = relativeX * canvasSize.width;
         }
 
-        const newY = canvasSize.height - 200;
+        const newY = canvasSize.height - PLAYER_Y_OFFSET;
 
-        newX = Math.max(0, Math.min(canvasSize.width - PLAYER_SIZE, newX));
+        newX = clampX(newX, canvasSize.width, PLAYER_SIZE);
 
         return { x: newX, y: newY };
       });
@@ -65,10 +65,7 @@ function Player({ canvasSize, onMove }: PlayerProps) {
     if (direction) {
       setPosition((prev) => {
         const movement = direction === "LEFT" ? -PLAYER_SPEED : PLAYER_SPEED;
-        const newX = Math.max(
-          0,
-          Math.min(canvasSize.width - PLAYER_SIZE, prev.x + movement),
-        );
+        const newX = clampX(prev.x + movement, canvasSize.width, PLAYER_SIZE);
         return { ...prev, x: newX };
       });
     }

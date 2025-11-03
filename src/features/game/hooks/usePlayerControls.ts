@@ -1,7 +1,11 @@
 import { useCallback, useEffect, useState } from "react";
-import type { Direction } from "../../types/common";
-import { DIRECTION_KEYS } from "./constants";
+import type { Direction } from "../types";
+import { DIRECTION_KEYS } from "../config/constants";
 
+/**
+ * Custom hook to manage player keyboard controls
+ * @returns Object with getDirection function
+ */
 function usePlayerControls() {
   const [heldKeys, setHeldKeys] = useState<Set<Direction>>(new Set());
 

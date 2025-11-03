@@ -2,8 +2,8 @@ import { Graphics } from "pixi.js";
 import { extend, useTick } from "@pixi/react";
 import { useState, useRef } from "react";
 
-import { ITEM_SIZE } from "./constants";
-import { PLAYER_SIZE } from "../Player/constants";
+import { ITEM_SIZE, PLAYER_SIZE } from "../../config/constants";
+import { detectCollision } from "../../utils/collision";
 
 extend({ Graphics });
 
@@ -43,17 +43,12 @@ function Item({
         return prev;
       }
 
-      const itemCenterX = x + ITEM_SIZE / 2;
-      const itemCenterY = newY + ITEM_SIZE / 2;
-      const playerCenterX = playerX + PLAYER_SIZE / 2;
-      const playerCenterY = playerY + PLAYER_SIZE / 2;
-
-      const distance = Math.sqrt(
-        Math.pow(itemCenterX - playerCenterX, 2) +
-          Math.pow(itemCenterY - playerCenterY, 2),
+      const hasCollision = detectCollision(
+        { x, y: newY, size: ITEM_SIZE },
+        { x: playerX, y: playerY, size: PLAYER_SIZE },
       );
 
-      if (distance < (ITEM_SIZE + PLAYER_SIZE) / 2) {
+      if (hasCollision) {
         shouldCallCollect.current = true;
         return prev;
       }

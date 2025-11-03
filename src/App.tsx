@@ -1,33 +1,36 @@
 import { useEffect, useState } from "react";
 
-import GameController from "./features/game/GameController";
-import GameUI from "./features/ui/GameUI";
+import Game from "./features/game/Game";
+import GameUI from "./features/game/components/GameUI";
+import { useHighscore } from "./features/game/hooks/useHighscore";
+import {
+  INITIAL_LIVES,
+  GAME_OVER_LIVES,
+} from "./features/game/config/constants";
 
 function App() {
   const [score, setScore] = useState<number>(0);
-  const [highscore, setHighscore] = useState<number>(0);
-  const [lives, setLives] = useState<number>(10);
+  const [lives, setLives] = useState<number>(INITIAL_LIVES);
   const [isPlaying, setIsPlaying] = useState<boolean>(false);
   const [isDead, setIsDead] = useState<boolean>(false);
+
+  const { highscore, updateHighscore } = useHighscore();
 
   const handleStart = () => {
     setIsPlaying(true);
     setIsDead(false);
     setScore(0);
-    setLives(10);
-    setHighscore(Number(window.localStorage.getItem("highscore") || 0));
+    setLives(INITIAL_LIVES);
   };
 
   const handleGameOver = () => {
-    if (score > highscore)
-      window.localStorage.setItem("highscore", String(score));
-
+    updateHighscore(score);
     setIsDead(true);
     setIsPlaying(false);
   };
 
   useEffect(() => {
-    if (lives === 0) {
+    if (lives === GAME_OVER_LIVES) {
       handleGameOver();
     }
   }, [lives]);
@@ -58,7 +61,7 @@ function App() {
         </div>
       ) : (
         <>
-          <GameController
+          <Game
             isPlaying={isPlaying}
             onGameStart={handleStart}
             onScoreChange={setScore}

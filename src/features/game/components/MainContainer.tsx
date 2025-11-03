@@ -4,23 +4,23 @@ import { initDevtools } from "@pixi/devtools";
 
 import Player from "./Player/Player";
 import Item from "./Item/Item";
-import { ITEM_FALL_SPEED, ITEM_SPAWN_INTERVAL } from "./Item/constants";
-
-import type { Position } from "../types/common";
+import {
+  ITEM_FALL_SPEED,
+  ITEM_SPAWN_INTERVAL,
+  ITEM_SPAWN_PADDING,
+  ITEM_SPAWN_Y_MIN,
+  ITEM_SPAWN_Y_MAX,
+  SCORE_PER_ITEM,
+} from "../config/constants";
+import { audioManager } from "../utils/audio";
+import type { Position, CanvasSize, ItemData } from "../types";
 
 interface MainContainerProps {
-  canvasSize: { width: number; height: number };
+  canvasSize: CanvasSize;
   isPlaying: boolean;
   onGameStart: () => void;
   onScoreChange: (score: number | ((prev: number) => number)) => void;
   onLivesChange: (lives: number | ((prev: number) => number)) => void;
-}
-
-interface ItemData {
-  id: string;
-  x: number;
-  y: number;
-  speed: number;
 }
 
 function MainContainer({
@@ -37,9 +37,6 @@ function MainContainer({
   });
 
   const { app } = useApplication();
-
-  const coinSound = new Audio("assets/coin.flac");
-  coinSound.volume = 0.2;
 
   useEffect(() => {
     if (isPlaying) {
@@ -58,8 +55,15 @@ function MainContainer({
     const interval = setInterval(() => {
       const newItem: ItemData = {
         id: `item-${Date.now()}-${Math.random()}`,
-        x: Math.floor(Math.random() * (canvasSize.width - 50 - 50 + 1) + 50),
-        y: Math.floor(Math.random() * (-30 - -100 + 1)) + -100,
+        x: Math.floor(
+          Math.random() *
+            (canvasSize.width - ITEM_SPAWN_PADDING * 2 + 1) +
+            ITEM_SPAWN_PADDING,
+        ),
+        y: Math.floor(
+          Math.random() * (ITEM_SPAWN_Y_MAX - ITEM_SPAWN_Y_MIN + 1) +
+            ITEM_SPAWN_Y_MIN,
+        ),
         speed: ITEM_FALL_SPEED,
       };
       setItems((prev) => [...prev, newItem]);
@@ -79,8 +83,8 @@ function MainContainer({
 
   const handleCollect = (id: string) => {
     removeItem(id);
-    coinSound.play();
-    onScoreChange((prev) => prev + 10);
+    audioManager.playCoinSound();
+    onScoreChange((prev) => prev + SCORE_PER_ITEM);
   };
 
   if (import.meta.env.MODE === "development") {

@@ -12,6 +12,8 @@ import type { Position } from "../types/common";
 interface MainContainerProps {
     canvasSize: { width: number, height: number }
     children?: React.ReactNode
+    isPlaying: boolean
+    onScoreChange: (score: number | ((prev: number) => number)) => void
 }
 
 interface ItemData {
@@ -20,11 +22,21 @@ interface ItemData {
     speed: number
 }
 
-function MainContainer({ children, canvasSize }: MainContainerProps) {
+function MainContainer({ children, canvasSize, isPlaying, onScoreChange }: MainContainerProps) {
     const [items, setItems] = useState<ItemData[]>([])
     const [playerPosition, setPlayerPosition] = useState<Position>({ x: 0, y: 0 })
 
+    // Reset items when game stops
     useEffect(() => {
+        if (!isPlaying) {
+            setItems([])
+        }
+    }, [isPlaying])
+
+    // Spawn items only when playing
+    useEffect(() => {
+        if (!isPlaying) return
+
         const interval = setInterval(() => {
             const newItem: ItemData = {
                 id: `item-${Date.now()}-${Math.random()}`,
@@ -35,7 +47,7 @@ function MainContainer({ children, canvasSize }: MainContainerProps) {
         }, ITEM_SPAWN_INTERVAL)
 
         return () => clearInterval(interval)
-    }, [canvasSize.width])
+    }, [canvasSize.width, isPlaying])
 
     const removeItem = (id: string) => {
         setItems(prev => prev.filter(item => item.id !== id))
@@ -43,7 +55,7 @@ function MainContainer({ children, canvasSize }: MainContainerProps) {
 
     const handleCollect = (id: string) => {
         removeItem(id)
-        console.log('addScore')
+        onScoreChange(prev => prev + 1)
     }
 
     if (import.meta.env.MODE === 'development') {

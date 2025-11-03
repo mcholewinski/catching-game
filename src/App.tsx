@@ -19,7 +19,7 @@ function App() {
         isPlaying={isPlaying}
         onStart={handleStart}
       />
-      <GameController />
+      <GameController isPlaying={isPlaying} onScoreChange={setScore} />
     </div>
   )
 }

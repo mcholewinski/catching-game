@@ -9,7 +9,12 @@ import { calculateGameSize } from "./utils";
 
 extend({ Container, Graphics, Sprite })
 
-function Game() {
+interface GameProps {
+    isPlaying: boolean
+    onScoreChange: (score: number | ((prev: number) => number)) => void
+}
+
+function Game({ isPlaying, onScoreChange }: GameProps) {
     const wrapperRef = useRef<HTMLDivElement | null>(null);
 
     const [canvasSize, setCanvasSize] = useState<{ width: number, height: number }>(calculateGameSize)
@@ -32,7 +37,7 @@ function Game() {
                 antialias
                 resizeTo={wrapperRef}
             >
-                <MainContainer canvasSize={canvasSize}/>
+                <MainContainer canvasSize={canvasSize} isPlaying={isPlaying} onScoreChange={onScoreChange}/>
             </Application>
         </div>
     )

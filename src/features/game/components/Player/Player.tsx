@@ -31,8 +31,6 @@ function Player({ canvasSize, onMove }: PlayerProps) {
   });
   const prevCanvasSize = useRef(canvasSize);
 
-  const runLeftRef = useRef<AnimatedSprite>(null);
-
   const { getDirection } = usePlayerControls();
 
   useEffect(() => {
@@ -83,12 +81,6 @@ function Player({ canvasSize, onMove }: PlayerProps) {
     loadFrames();
   })
 
-  useEffect(() => {
-    if (animation === 'runLeft' && runLeftRef.current) {
-      runLeftRef.current.play();
-    }
-  }, [animation]);
-
   useTick(() => {
     const direction = getDirection();
     let newAnim: PlayerAnim = 'idle';
@@ -131,6 +123,8 @@ function Player({ canvasSize, onMove }: PlayerProps) {
           width={PLAYER_SIZE}
           height={PLAYER_SIZE}
           interactive
+          playing
+          loop
           animationSpeed={0.1}
           x={position.x}
           y={position.y}
@@ -139,6 +133,7 @@ function Player({ canvasSize, onMove }: PlayerProps) {
         <pixiAnimatedSprite textures={walkRightFrames}
           width={PLAYER_SIZE}
           height={PLAYER_SIZE}
+          playing
           loop
           animationSpeed={0.1}
           x={position.x}

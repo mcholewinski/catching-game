@@ -1,75 +1,94 @@
-import { Assets, Container, Sprite, Texture } from 'pixi.js'
-import { extend, useTick } from '@pixi/react'
-import { useEffect, useState, useRef } from 'react';
+import { Assets, Container, Sprite, Texture } from "pixi.js";
+import { extend, useTick } from "@pixi/react";
+import { useEffect, useState, useRef } from "react";
 
-import { PLAYER_DEFAULT_POS_X, PLAYER_DEFAULT_POS_Y, PLAYER_SIZE, PLAYER_SPEED } from './constants'
-import usePlayerControls from './usePlayerControls';
-import type { Position } from '../../types/common';
+import {
+  PLAYER_DEFAULT_POS_X,
+  PLAYER_DEFAULT_POS_Y,
+  PLAYER_SIZE,
+  PLAYER_SPEED,
+} from "./constants";
+import usePlayerControls from "./usePlayerControls";
+import type { Position } from "../../types/common";
 
-extend({ Container, Sprite })
+extend({ Container, Sprite });
 
 interface PlayerProps {
-    canvasSize: { width: number, height: number }
-    onMove: ({ x, y }: Position) => void
+  canvasSize: { width: number; height: number };
+  onMove: ({ x, y }: Position) => void;
 }
 
 function Player({ canvasSize, onMove }: PlayerProps) {
-    const [texture, setTexture] = useState<Texture>(Texture.EMPTY);
-    const [position, setPosition] = useState({ x: PLAYER_DEFAULT_POS_X, y: PLAYER_DEFAULT_POS_Y })
-    const prevCanvasSize = useRef(canvasSize)
+  const [texture, setTexture] = useState<Texture>(Texture.EMPTY);
+  const [position, setPosition] = useState({
+    x: PLAYER_DEFAULT_POS_X,
+    y: PLAYER_DEFAULT_POS_Y,
+  });
+  const prevCanvasSize = useRef(canvasSize);
 
-    const { getDirection } = usePlayerControls()
+  const { getDirection } = usePlayerControls();
 
-    useEffect(() => {
-        const widthChanged = prevCanvasSize.current.width !== canvasSize.width
-        const heightChanged = prevCanvasSize.current.height !== canvasSize.height
+  useEffect(() => {
+    const widthChanged = prevCanvasSize.current.width !== canvasSize.width;
+    const heightChanged = prevCanvasSize.current.height !== canvasSize.height;
 
-        if (widthChanged || heightChanged) {
-            setPosition(prev => {
-                let newX = prev.x
+    if (widthChanged || heightChanged) {
+      setPosition((prev) => {
+        let newX = prev.x;
 
-                if (widthChanged) {
-                    const relativeX = prev.x / prevCanvasSize.current.width
-                    newX = relativeX * canvasSize.width
-                }
-
-                const newY = canvasSize.height - 200
-
-                newX = Math.max(0, Math.min(canvasSize.width - PLAYER_SIZE, newX))
-
-                return { x: newX, y: newY }
-            })
+        if (widthChanged) {
+          const relativeX = prev.x / prevCanvasSize.current.width;
+          newX = relativeX * canvasSize.width;
         }
-        prevCanvasSize.current = canvasSize
-    }, [canvasSize])
 
-    useEffect(() => {
-        if (texture === Texture.EMPTY) {
-            Assets.load('./assets/knight1.png').then((result) => { setTexture(result) })
-        }
-    }, [texture])
+        const newY = canvasSize.height - 200;
 
-    useTick(() => {
-        const direction = getDirection()
+        newX = Math.max(0, Math.min(canvasSize.width - PLAYER_SIZE, newX));
 
-        if (direction) {
-            setPosition(prev => {
-                const movement = direction === 'LEFT' ? -PLAYER_SPEED : PLAYER_SPEED
-                const newX = Math.max(0, Math.min(canvasSize.width - PLAYER_SIZE, prev.x + movement))
-                return { ...prev, x: newX }
-            })
-        }
-    })
+        return { x: newX, y: newY };
+      });
+    }
+    prevCanvasSize.current = canvasSize;
+  }, [canvasSize]);
 
-    useEffect(() => {
-        onMove(position)
-    }, [position, onMove])
+  useEffect(() => {
+    if (texture === Texture.EMPTY) {
+      Assets.load("./assets/knight1.png").then((result) => {
+        setTexture(result);
+      });
+    }
+  }, [texture]);
 
-    return (
-        <pixiContainer>
-            <pixiSprite texture={texture} width={PLAYER_SIZE} height={PLAYER_SIZE} x={position.x} y={position.y} />
-        </pixiContainer>
-    )
+  useTick(() => {
+    const direction = getDirection();
+
+    if (direction) {
+      setPosition((prev) => {
+        const movement = direction === "LEFT" ? -PLAYER_SPEED : PLAYER_SPEED;
+        const newX = Math.max(
+          0,
+          Math.min(canvasSize.width - PLAYER_SIZE, prev.x + movement),
+        );
+        return { ...prev, x: newX };
+      });
+    }
+  });
+
+  useEffect(() => {
+    onMove(position);
+  }, [position, onMove]);
+
+  return (
+    <pixiContainer>
+      <pixiSprite
+        texture={texture}
+        width={PLAYER_SIZE}
+        height={PLAYER_SIZE}
+        x={position.x}
+        y={position.y}
+      />
+    </pixiContainer>
+  );
 }
 
-export default Player
+export default Player;

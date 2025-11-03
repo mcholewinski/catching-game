@@ -1,7 +1,7 @@
 import { Application, extend } from "@pixi/react";
 import { Container, Graphics, Sprite } from "pixi.js";
 
-import { useCallback, useEffect, useRef, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 
 import MainContainer from "./components/MainContainer";
 
@@ -14,15 +14,13 @@ function Game() {
 
     const [canvasSize, setCanvasSize] = useState<{ width: number, height: number }>(calculateGameSize)
 
-    const updateCanvasSize = useCallback(() => {
-        setCanvasSize(calculateGameSize())
-    }, [])
-
     useEffect(() => {
+        const updateCanvasSize = () => setCanvasSize(calculateGameSize())
+
         window.addEventListener('resize', updateCanvasSize)
 
         return () => window.removeEventListener('resize', updateCanvasSize)
-    }, [updateCanvasSize])
+    }, [])
 
 
     return (

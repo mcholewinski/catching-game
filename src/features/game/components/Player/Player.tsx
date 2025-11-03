@@ -52,17 +52,10 @@ function Player({ canvasSize, onMove }: PlayerProps) {
     useTick(() => {
         const direction = getDirection()
 
-        if (direction === 'LEFT') {
+        if (direction) {
             setPosition(prev => {
-                const newX = Math.max(0, prev.x - PLAYER_SPEED)
-                const newPos = { ...prev, x: newX }
-                onMove(newPos)
-                return newPos
-            })
-        }
-        if (direction === 'RIGHT') {
-            setPosition(prev => {
-                const newX = Math.min(canvasSize.width - PLAYER_SIZE, prev.x + PLAYER_SPEED)
+                const movement = direction === 'LEFT' ? -PLAYER_SPEED : PLAYER_SPEED
+                const newX = Math.max(0, Math.min(canvasSize.width - PLAYER_SIZE, prev.x + movement))
                 const newPos = { ...prev, x: newX }
                 onMove(newPos)
                 return newPos

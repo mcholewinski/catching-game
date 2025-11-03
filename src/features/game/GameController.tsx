@@ -40,7 +40,7 @@ function Game({ isPlaying, onGameStart, onScoreChange, onLivesChange }: GameProp
                 antialias
                 resizeTo={wrapperRef}
             >
-                <MainContainer canvasSize={canvasSize} isPlaying={isPlaying} onScoreChange={onScoreChange} onLivesChange={onLivesChange} />
+                <MainContainer canvasSize={canvasSize} isPlaying={isPlaying} onGameStart={onGameStart} onScoreChange={onScoreChange} onLivesChange={onLivesChange} />
             </Application>
         </div>
     )

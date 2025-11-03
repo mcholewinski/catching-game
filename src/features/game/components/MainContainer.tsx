@@ -11,6 +11,7 @@ import type { Position } from "../types/common";
 interface MainContainerProps {
     canvasSize: { width: number, height: number }
     isPlaying: boolean;
+    onGameStart: () => void;
     onScoreChange: (score: number | ((prev: number) => number)) => void
     onLivesChange: (lives: number | ((prev: number) => number)) => void
 }
@@ -22,12 +23,20 @@ interface ItemData {
     speed: number
 }
 
-function MainContainer({ canvasSize, isPlaying, onLivesChange, onScoreChange }: MainContainerProps) {
+function MainContainer({ canvasSize, isPlaying, onGameStart, onLivesChange, onScoreChange }: MainContainerProps) {
     const [items, setItems] = useState<ItemData[]>([])
     const [playerPosition, setPlayerPosition] = useState<Position>({ x: 0, y: 0 })
+    const { app } = useApplication()
 
     const coinSound = new Audio("assets/coin.flac")
     coinSound.volume = 0.2
+
+    // Start the Pixi app when game starts
+    useEffect(() => {
+        if (isPlaying) {
+            app.start()
+        }
+    }, [isPlaying, app])
 
     useEffect(() => {
         if (!isPlaying) {
@@ -65,7 +74,6 @@ function MainContainer({ canvasSize, isPlaying, onLivesChange, onScoreChange }: 
     }
 
     if (import.meta.env.MODE === 'development') {
-        const { app } = useApplication()
         initDevtools({ app })
     }
 
